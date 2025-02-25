@@ -1,41 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, inject, watch, onMounted, nextTick } from 'vue';
+import { bskyPluginKey } from '../libs/bluesky';
 
-defineProps<{ msg: string }>()
+const bsky = inject(bskyPluginKey);
 
-const count = ref(0)
+const signInUrl = ref<string>();
+
+const username = ref<string>();
+const profilePic = ref<string>();
+
+watch(bsky.oauthClient, async (oauthClient) => {
+  signInUrl.value = await oauthClient.authorize('bamnet-test.bsky.social');
+});
+
+watch(bsky.agent, async (agent) => {
+  if (agent) {
+    // If the user is signed in, fetch their profile.
+    const profile = await agent.getProfile({ actor: agent.did! });
+    username.value = profile.data.displayName || profile.data.handle;
+    profilePic.value = profile.data.avatar;
+  }
+});
+
+async function signOut() {
+  bsky.session.value.signOut();
+  bsky.session.value = undefined;
+}
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
-
   <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
+    <a v-if="!bsky.session.value" :href="signInUrl">Sign In</a>
+    <div v-else>
+      <img width="50px" v-if="profilePic" :src="profilePic" alt="Profile Picture" />
+      <p v-if="username">{{ username }}</p>
+    </div>
+    <button v-if="bsky.session.value" @click="signOut">Sign Out</button>
   </div>
-
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Learn more about IDE Support for Vue in the
-    <a
-      href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support"
-      target="_blank"
-      >Vue Docs Scaling up Guide</a
-    >.
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
 </template>
 
-<style scoped>
-.read-the-docs {
-  color: #888;
-}
-</style>
+<style scoped></style>
