@@ -5,4 +5,4 @@ import { bskyPlugin } from './libs/bluesky'
 
 createApp(App)
     .use(bskyPlugin)
-    .mount('#app')
+    .mount('#app');
