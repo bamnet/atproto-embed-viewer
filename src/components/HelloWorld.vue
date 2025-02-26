@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useBluesky } from '../libs/bluesky'
 
-// Use the Bluesky plugin through the composable
+// Use the Bluesky plugin.
 const { agent, generateSigninUrl, signOut, isSignedIn } = useBluesky();
 
 const handle = ref('');
@@ -10,7 +10,7 @@ const timeline = ref([]);
 const profile = ref(null);
 const isLoading = ref(false);
 
-// Fetch the user's profile
+// Fetch the user's profile.
 const fetchProfile = async () => {
   if (!isSignedIn.value || !agent.value) {
     return;
@@ -24,7 +24,7 @@ const fetchProfile = async () => {
   }
 }
 
-// Fetch timeline when signed in
+// Fetch timeline when signed in.
 const fetchTimeline = async () => {
   if (!isSignedIn.value || !agent.value) {
     return;
@@ -42,7 +42,7 @@ const fetchTimeline = async () => {
   }
 }
 
-// Handle sign in - starts the OAuth flow
+// Handle sign in - starts the OAuth flow.
 const handleSignIn = async () => {
   const url = await generateSigninUrl(handle.value);
   // The page will redirect to Bluesky's auth page
@@ -50,14 +50,14 @@ const handleSignIn = async () => {
   return;
 }
 
-// Handle sign out
+// Handle sign out.
 const handleSignOut = async () => {
   await signOut();
   timeline.value = [];
   profile.value = null;
 }
 
-// Watch for both init completion and sign-in status
+// Watch for sign-in status.
 watch(isSignedIn, (signedIn) => {
   if (signedIn) {
     fetchProfile();
@@ -65,7 +65,7 @@ watch(isSignedIn, (signedIn) => {
   }
 })
 
-// Fetch data on mount if ready and signed in
+// Fetch data on mount if signed in.
 onMounted(() => {
   if (isSignedIn.value) {
     fetchProfile();
@@ -133,7 +133,7 @@ onMounted(() => {
   margin-bottom: 20px;
   padding: 15px;
   border-radius: 8px;
-  background-color: #f5f8ff;
+  background-color: #666;
 }
 
 .avatar {
@@ -158,7 +158,7 @@ onMounted(() => {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #666;
   border-radius: 8px;
 }
 
@@ -172,6 +172,7 @@ onMounted(() => {
 
 .btn-signin, .btn-signout {
   padding: 8px 16px;
+  margin: 8px;
   background-color: #3b82f6;
   color: white;
   border: none;
