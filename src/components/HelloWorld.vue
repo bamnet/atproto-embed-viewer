@@ -13,6 +13,8 @@ const timeline = ref<FeedViewPost[]>([]);
 const profile = ref<ProfileViewDetailed>();
 const isLoading = ref(false);
 
+const MAPS_API_KEY = import.meta.env.VITE_MAPS_API_KEY;
+
 // Fetch the user's profile.
 const fetchProfile = async () => {
   if (!isSignedIn?.value || !agent?.value) {
@@ -59,7 +61,7 @@ const handleSignOut = async () => {
   profile.value = undefined;
 }
 
-// Add this to your existing functions
+// Handle post created event.
 const handlePostCreated = () => {
   fetchTimeline()
 }
@@ -79,6 +81,11 @@ onMounted(() => {
     fetchTimeline();
   }
 })
+
+// Generate Google Maps embed URL.
+const getGoogleMapsEmbedUrl = (latitude: string, longitude: string) => {
+  return `https://www.google.com/maps/embed/v1/place?key=${MAPS_API_KEY}&center=${latitude},${longitude}&zoom=14&q=${latitude},${longitude}`;
+}
 </script>
 
 <template>
@@ -100,6 +107,17 @@ onMounted(() => {
           <div v-for="post in timeline" :key="post.post.uri" class="post">
             <h4>{{ post.post.author?.displayName || post.post.author?.handle }}</h4>
             <p>{{ post.post.record.text }}</p>
+            <div v-if="post.post.record.embed?.$type === 'community.lexicon.embed.geo'">
+              <iframe
+                :src="getGoogleMapsEmbedUrl(post.post.record.embed.latitude, post.post.record.embed.longitude)"
+                width="400"
+                height="200"
+                style="border:0;"
+                allowfullscreen="false"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
           </div>
         </div>
         <div v-else-if="isLoading">
