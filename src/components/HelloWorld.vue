@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useBluesky } from '../libs/bluesky'
 import type { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
 import type { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
+import NewPost from './NewPost.vue'
 
 // Use the Bluesky plugin.
 const { agent, generateSigninUrl, signOut, isSignedIn } = useBluesky();
@@ -58,6 +59,11 @@ const handleSignOut = async () => {
   profile.value = undefined;
 }
 
+// Add this to your existing functions
+const handlePostCreated = () => {
+  fetchTimeline()
+}
+
 // Watch for sign-in status.
 watch(isSignedIn!, (signedIn) => {
   if (signedIn) {
@@ -88,6 +94,7 @@ onMounted(() => {
       </div>
       
       <div class="feed-section">
+        <NewPost @post-created="handlePostCreated" />
         <h3>Your Timeline</h3>
         <div v-if="timeline.length > 0">
           <div v-for="post in timeline" :key="post.post.uri" class="post">
