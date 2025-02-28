@@ -1,0 +1,9 @@
+{
+    "client_id": "https://ubuntu-1.tail4b87.ts.net/client_metadata.json",
+    "grant_types": ["authorization_code", "refresh_token"],
+    "scope": "atproto transition:generic",
+    "response_types": ["code"],
+    "redirect_uris": ["https://ubuntu-1.tail4b87.ts.net/"],
+    "token_endpoint_auth_method": "none",
+    "dpop_bound_access_tokens": true
+}

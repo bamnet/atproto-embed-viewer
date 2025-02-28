@@ -8,7 +8,7 @@ export const BLUESKY_SIGN_OUT = Symbol('bluesky-sign-out') as InjectionKey<() =>
 export const BLUESKY_IS_SIGNED_IN = Symbol('bluesky-is-signed-in') as InjectionKey<Ref<boolean>>;
 
 // Manually construct a Client ID for local development.
-const CLIENT_ID =
+const DEVELOPMENT_CLIENT_ID =
     // Special loopback behavior is only trigged for localhost.
     'http://localhost' +
     // Include any scopes necessary for your application.
@@ -38,15 +38,37 @@ export const bskyPlugin = {
         });
 
 
-        const initOAuthClient = async () => {
-            const oauthClient = await BrowserOAuthClient.load({
-                clientId: CLIENT_ID,
+        const oauthClientFactory = async () => {
+            if (import.meta.env.MODE == "development") {
+                // In development mode, use a client ID that is configured to work
+                // with the local development server.
+                return await BrowserOAuthClient.load({
+                    clientId: DEVELOPMENT_CLIENT_ID,
+                    handleResolver: RESOLVER,
+                });
+            }
+
+            // Since BrowserOAuthClient.load has validations which requires a
+            // full URL to the client metadata, we fetch it manually first.
+            //
+            // This avoids the need to hardcode the full path to the client metadata
+            // in the source code too.
+            const clientMetadata = await fetch('client_metadata.json');
+
+            return new BrowserOAuthClient({
+                // @ts-ignore
+                clientMetadata: await clientMetadata.json(),
                 handleResolver: RESOLVER,
             });
+        };
+
+        const initOAuthClient = async () => {
+            const oauthClient = await oauthClientFactory();
 
             state.oauthClient = oauthClient;
 
             const result = await oauthClient.init();
+
             if (result) {
                 state.session = result.session;
 

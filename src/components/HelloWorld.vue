@@ -1,23 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useBluesky } from '../libs/bluesky'
+import type { ProfileViewDetailed } from '@atproto/api/dist/client/types/app/bsky/actor/defs';
+import type { FeedViewPost } from '@atproto/api/dist/client/types/app/bsky/feed/defs';
 
 // Use the Bluesky plugin.
 const { agent, generateSigninUrl, signOut, isSignedIn } = useBluesky();
 
 const handle = ref('');
-const timeline = ref([]);
-const profile = ref(null);
+const timeline = ref<FeedViewPost[]>([]);
+const profile = ref<ProfileViewDetailed>();
 const isLoading = ref(false);
 
 // Fetch the user's profile.
 const fetchProfile = async () => {
-  if (!isSignedIn.value || !agent.value) {
+  if (!isSignedIn?.value || !agent?.value) {
     return;
   }
   
   try {
-    const response = await agent.value.getProfile({ actor: agent.value.did });
+    const response = await agent.value.getProfile({ actor: agent.value.did! });
     profile.value = response.data;
   } catch (error) {
     console.error('Failed to fetch profile:', error);
@@ -26,7 +28,7 @@ const fetchProfile = async () => {
 
 // Fetch timeline when signed in.
 const fetchTimeline = async () => {
-  if (!isSignedIn.value || !agent.value) {
+  if (!isSignedIn?.value || !agent?.value) {
     return;
   }
 
@@ -34,7 +36,6 @@ const fetchTimeline = async () => {
   try {
     const response = await agent.value.getTimeline();
     timeline.value = response.data.feed;
-    console.log(timeline.value);
   } catch (error) {
     console.error('Failed to fetch timeline:', error);
   } finally {
@@ -44,21 +45,21 @@ const fetchTimeline = async () => {
 
 // Handle sign in - starts the OAuth flow.
 const handleSignIn = async () => {
-  const url = await generateSigninUrl(handle.value);
+  const url = await generateSigninUrl!(handle.value);
   // The page will redirect to Bluesky's auth page
-  window.open(url, '_self', 'noopener');
+  window.open(url!, '_self', 'noopener');
   return;
 }
 
 // Handle sign out.
 const handleSignOut = async () => {
-  await signOut();
+  await signOut!();
   timeline.value = [];
-  profile.value = null;
+  profile.value = undefined;
 }
 
 // Watch for sign-in status.
-watch(isSignedIn, (signedIn) => {
+watch(isSignedIn!, (signedIn) => {
   if (signedIn) {
     fetchProfile();
     fetchTimeline();
@@ -67,7 +68,7 @@ watch(isSignedIn, (signedIn) => {
 
 // Fetch data on mount if signed in.
 onMounted(() => {
-  if (isSignedIn.value) {
+  if (isSignedIn?.value) {
     fetchProfile();
     fetchTimeline();
   }
@@ -89,7 +90,7 @@ onMounted(() => {
       <div class="feed-section">
         <h3>Your Timeline</h3>
         <div v-if="timeline.length > 0">
-          <div v-for="post in timeline" :key="post.uri" class="post">
+          <div v-for="post in timeline" :key="post.post.uri" class="post">
             <h4>{{ post.post.author?.displayName || post.post.author?.handle }}</h4>
             <p>{{ post.post.record.text }}</p>
           </div>
