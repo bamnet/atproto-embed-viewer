@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useBluesky } from '../libs/bluesky'
+import { AppBskyFeedPost } from '@atproto/api'
 
 const { agent } = useBluesky()
 const postText = ref('')
 const isPosting = ref(false)
 const errorMessage = ref('')
+const latitude = ref('')
+const longitude = ref('')
+const locationName = ref('')
 
 const handleSubmit = async () => {
   if (!agent?.value || !postText.value.trim()) {
@@ -16,10 +20,29 @@ const handleSubmit = async () => {
   errorMessage.value = ''
 
   try {
-    await agent.value.post({
-      text: postText.value.trim(),
-    })
+    const post = {
+        text: postText.value.trim(),
+        createdAt: new Date().toISOString(),
+        embed: {
+            $type: 'community.lexicon.embed.geo',
+            latitude: latitude.value,
+            longitude: longitude.value,
+            name: locationName.value.trim(),
+        },
+    };
+
+    if (!AppBskyFeedPost.isRecord(post)) {
+        console.log("Invalid post");
+    }
+    if (!AppBskyFeedPost.validateRecord(post)) {
+        console.log("Invalid post");
+    }
+
+    await agent.value.post(post)
     postText.value = ''
+    latitude.value = ''
+    longitude.value = ''
+    locationName.value = ''
     emit('post-created')
   } catch (error) {
     errorMessage.value = 'Failed to create post'
@@ -41,6 +64,24 @@ const emit = defineEmits<{
       placeholder="What's on your mind?"
       :disabled="isPosting"
     ></textarea>
+    <input
+      v-model="latitude"
+      type="text"
+      placeholder="Latitude"
+      :disabled="isPosting"
+    />
+    <input
+      v-model="longitude"
+      type="text"
+      placeholder="Longitude"
+      :disabled="isPosting"
+    />
+    <input
+      v-model="locationName"
+      type="text"
+      placeholder="Location Name"
+      :disabled="isPosting"
+    />
     <div class="actions">
       <span class="error" v-if="errorMessage">{{ errorMessage }}</span>
       <button
@@ -61,9 +102,8 @@ const emit = defineEmits<{
   border-radius: 8px;
 }
 
-textarea {
+textarea, input {
   width: 100%;
-  min-height: 100px;
   padding: 12px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
