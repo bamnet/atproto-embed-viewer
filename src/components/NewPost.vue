@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useBluesky } from '../libs/bluesky'
 import { AppBskyFeedPost } from '@atproto/api'
 
@@ -10,6 +10,40 @@ const errorMessage = ref('')
 const latitude = ref('')
 const longitude = ref('')
 const locationName = ref('')
+const map = ref<google.maps.Map | null>(null)
+const marker = ref<google.maps.Marker | null>(null)
+
+onMounted(() => {
+  initializeMap()
+})
+
+const initializeMap = async () => {
+  const mapElement = document.getElementById('map') as HTMLElement;
+
+  const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+  const { Marker } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+
+  map.value = new Map(mapElement, {
+    center: { lat: 40.7414599557659, lng: -74.00339116926585}, // Default to Google NYC
+    zoom: 13,
+    streetViewControl: false,
+    zoomControl: true,
+  });
+
+  marker.value = new Marker({
+    position: map.value.getCenter(),
+    map: map.value
+  });
+
+  map.value.addListener('center_changed', () => {
+    const location = map.value!.getCenter();
+    if (marker.value) {
+      marker.value.setPosition(map.value!.getCenter());
+    }
+    latitude.value = location.lat().toString();
+    longitude.value = location.lng().toString();
+  })
+}
 
 const handleSubmit = async () => {
   if (!agent?.value || !postText.value.trim()) {
@@ -64,24 +98,27 @@ const emit = defineEmits<{
       placeholder="What's on your mind?"
       :disabled="isPosting"
     ></textarea>
-    <input
-      v-model="latitude"
-      type="text"
-      placeholder="Latitude"
-      :disabled="isPosting"
-    />
-    <input
-      v-model="longitude"
-      type="text"
-      placeholder="Longitude"
-      :disabled="isPosting"
-    />
-    <input
-      v-model="locationName"
-      type="text"
-      placeholder="Location Name"
-      :disabled="isPosting"
-    />
+    <div class="location-picker">
+      <div id="map"></div>
+      <input
+        v-model="locationName"
+        type="text"
+        placeholder="Location Name (optional)"
+        :disabled="isPosting"
+      />
+      <input
+        v-model="latitude"
+        type="text"
+        placeholder="Latitude"
+        :disabled="isPosting"
+      />
+      <input
+        v-model="longitude"
+        type="text"
+        placeholder="Longitude"
+        :disabled="isPosting"
+      />
+    </div>
     <div class="actions">
       <span class="error" v-if="errorMessage">{{ errorMessage }}</span>
       <button
@@ -109,6 +146,13 @@ textarea, input {
   border: 1px solid #ddd;
   border-radius: 4px;
   resize: vertical;
+  box-sizing: border-box; /* Add this to include padding in width calculation */
+}
+
+/* Remove margin from last input in each container */
+.location-picker input:last-of-type,
+textarea:last-of-type {
+  margin-bottom: 0;
 }
 
 .actions {
@@ -133,5 +177,16 @@ button:disabled {
 
 .error {
   color: #ef4444;
+}
+
+.location-picker {
+  margin: 10px 0;
+}
+
+#map {
+  width: 100%;
+  height: 300px;
+  margin: 10px 0;
+  border-radius: 4px;
 }
 </style>
