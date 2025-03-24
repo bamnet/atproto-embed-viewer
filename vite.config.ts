@@ -6,5 +6,6 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     host: '127.0.0.1',  // OAuth loopback requires 127.0.0.1 or [::1], not localhost.
-  }
+  },
+  base: '/atproto-embed-viewer/' // Add this line - should match your repository name
 })
