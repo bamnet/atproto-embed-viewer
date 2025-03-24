@@ -107,7 +107,9 @@ const getGoogleMapsEmbedUrl = (latitude: string, longitude: string) => {
           <div v-for="post in timeline" :key="post.post.uri" class="post">
             <h4>{{ post.post.author?.displayName || post.post.author?.handle }}</h4>
             <p>{{ post.post.record.text }}</p>
+            <!-- @vue-expect-error -->
             <div v-if="post.post.record.embed?.$type === 'community.lexicon.embed.geo'">
+              <!-- @vue-expect-error -->
               <iframe
                 :src="getGoogleMapsEmbedUrl(post.post.record.embed.latitude, post.post.record.embed.longitude)"
                 width="400"
