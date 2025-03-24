@@ -141,6 +141,12 @@ const getGoogleMapsEmbedUrl = (latitude: string, longitude: string) => {
         <button type="submit" class="btn-signin">Sign In with Bluesky</button>
       </form>
     </div>
+    <footer class="cute-footer">
+      <span>🔨 with 💙 by </span>
+      <a href="https://github.com/bamnet/atproto-embed-viewer" target="_blank" rel="noopener noreferrer">
+        <span class="github-icon">🐙</span> source code
+      </a>
+    </footer>
   </div>
 </template>
 
@@ -210,5 +216,28 @@ const getGoogleMapsEmbedUrl = (latitude: string, longitude: string) => {
 
 .btn-signout {
   background-color: #ef4444;
+}
+
+.cute-footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.cute-footer a {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cute-footer a:hover {
+  color: #2563eb;
+}
+
+.github-icon {
+  font-size: 1.2em;
+  vertical-align: middle;
 }
 </style>
