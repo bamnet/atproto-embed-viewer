@@ -36,7 +36,7 @@ const initializeMap = async () => {
   });
 
   map.value.addListener('center_changed', () => {
-    const location = map.value!.getCenter();
+    const location = map.value!.getCenter()!;
     if (marker.value) {
       marker.value.setPosition(map.value!.getCenter());
     }
