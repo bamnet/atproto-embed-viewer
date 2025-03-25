@@ -51,7 +51,7 @@ const getPostId = (uri: string): string => {
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
         <div class="timestamp">
-            <router-link :to="`/post/${getPostId(post.post.uri)}`">
+            <router-link :to="`/post/uri/${getPostId(post.post.uri)}`">
                 {{ formatTimestamp(post.post.indexedAt) }}
             </router-link>
         </div>

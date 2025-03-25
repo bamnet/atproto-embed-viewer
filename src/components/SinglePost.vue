@@ -5,28 +5,56 @@ import type { PostView } from '@atproto/api/dist/client/types/app/bsky/feed/defs
 import PostDisplay from './PostDisplay.vue'
 
 const props = defineProps<{
-    uri: string
+    uri?: string
+    id?: string
 }>()
 
 const { agent, isSignedIn } = useBluesky()
 const post = ref<PostView>()
 const isLoading = ref(false)
 
-const fetchPost = async () => {
-    if (!isSignedIn?.value || !agent?.value) {
+const fetchPostByCustomId = async () => {
+    if (!isSignedIn?.value || !agent?.value || !props.id) {
         return
     }
 
     isLoading.value = true
     try {
-        const response = await agent.value.getPostThread({ uri: decodeURIComponent(props.uri) });
-        if ('post' in response.data.thread) {
-            post.value = response.data.thread.post as PostView
+        // Search for posts containing our custom ID
+        const response = await agent.value.app.bsky.feed.searchPosts({
+            q: props.id,
+            limit: 1
+        })
+        if (response.data.posts.length > 0) {
+            post.value = response.data.posts[0]
         }
     } catch (error) {
-        console.error('Failed to fetch post:', error)
+        console.error('Failed to fetch post by ID:', error)
     } finally {
         isLoading.value = false
+    }
+}
+
+const fetchPost = async () => {
+    if (!isSignedIn?.value || !agent?.value) {
+        return
+    }
+
+    if (props.uri) {
+        // Original URI-based fetch
+        isLoading.value = true
+        try {
+            const response = await agent.value.getPostThread({ uri: decodeURIComponent(props.uri) })
+            if ('post' in response.data.thread) {
+                post.value = response.data.thread.post as PostView
+            }
+        } catch (error) {
+            console.error('Failed to fetch post:', error)
+        } finally {
+            isLoading.value = false
+        }
+    } else if (props.id) {
+        await fetchPostByCustomId()
     }
 }
 

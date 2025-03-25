@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useBluesky } from '../libs/bluesky'
-import { AppBskyFeedPost } from '@atproto/api'
+import { AppBskyFeedPost, RichText } from '@atproto/api'
 
 const { agent } = useBluesky()
 const postText = ref('')
@@ -12,6 +12,12 @@ const longitude = ref('')
 const locationName = ref('')
 const map = ref<google.maps.Map | null>(null)
 const marker = ref<google.maps.Marker | null>(null)
+const addLink = ref(true)
+const baseUrl = (window.location.origin + import.meta.env.BASE_URL).slice(0, -1);
+
+const generatePostId = () => {
+  return `geo-${Date.now()}`
+}
 
 onMounted(() => {
   initializeMap()
@@ -24,7 +30,7 @@ const initializeMap = async () => {
   const { Marker } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
 
   map.value = new Map(mapElement, {
-    center: { lat: 40.7414599557659, lng: -74.00339116926585}, // Default to Google NYC
+    center: { lat: 40.7414599557659, lng: -74.00339116926585 }, // Default to Google NYC
     zoom: 13,
     streetViewControl: false,
     zoomControl: true,
@@ -54,22 +60,33 @@ const handleSubmit = async () => {
   errorMessage.value = ''
 
   try {
+    const postId = generatePostId()
+    let finalText = postText.value.trim()
+    if (addLink.value) {
+      finalText += `\n\nView on map: ${baseUrl}/post/eid/${postId}`
+    }
+
+    // Create and parse rich text
+    const rt = new RichText({ text: finalText })
+    await rt.detectFacets(agent.value) // This detects mentions, links, and tags
+
     const post = {
-        text: postText.value.trim(),
-        createdAt: new Date().toISOString(),
-        embed: {
-            $type: 'community.lexicon.embed.geo',
-            latitude: latitude.value,
-            longitude: longitude.value,
-            name: locationName.value.trim(),
-        },
-    };
+      text: rt.text,
+      facets: rt.facets,
+      createdAt: new Date().toISOString(),
+      embed: {
+        $type: 'community.lexicon.embed.geo',
+        latitude: latitude.value,
+        longitude: longitude.value,
+        name: locationName.value.trim(),
+      },
+    }
 
     if (!AppBskyFeedPost.isRecord(post)) {
-        console.log("Invalid post");
+      console.log("Invalid post");
     }
     if (!AppBskyFeedPost.validateRecord(post)) {
-        console.log("Invalid post");
+      console.log("Invalid post");
     }
 
     await agent.value.post(post)
@@ -93,38 +110,20 @@ const emit = defineEmits<{
 
 <template>
   <div class="new-post">
-    <textarea
-      v-model="postText"
-      placeholder="What's on your mind?"
-      :disabled="isPosting"
-    ></textarea>
+    <textarea v-model="postText" placeholder="What's on your mind?" :disabled="isPosting"></textarea>
     <div class="location-picker">
       <div id="map"></div>
-      <input
-        v-model="locationName"
-        type="text"
-        placeholder="Location Name (optional)"
-        :disabled="isPosting"
-      />
-      <input
-        v-model="latitude"
-        type="text"
-        placeholder="Latitude"
-        :disabled="isPosting"
-      />
-      <input
-        v-model="longitude"
-        type="text"
-        placeholder="Longitude"
-        :disabled="isPosting"
-      />
+      <input v-model="locationName" type="text" placeholder="Location Name (optional)" :disabled="isPosting" />
+      <input v-model="latitude" type="text" placeholder="Latitude" :disabled="isPosting" />
+      <input v-model="longitude" type="text" placeholder="Longitude" :disabled="isPosting" />
+      <label class="link-option">
+        <input type="checkbox" v-model="addLink" />
+        Add map link for compatibility
+      </label>
     </div>
     <div class="actions">
       <span class="error" v-if="errorMessage">{{ errorMessage }}</span>
-      <button
-        @click="handleSubmit"
-        :disabled="isPosting || !postText.trim()"
-      >
+      <button @click="handleSubmit" :disabled="isPosting || !postText.trim()">
         {{ isPosting ? 'Posting...' : 'Post' }}
       </button>
     </div>
@@ -139,14 +138,16 @@ const emit = defineEmits<{
   border-radius: 8px;
 }
 
-textarea, input {
+textarea,
+input {
   width: 100%;
   padding: 12px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   resize: vertical;
-  box-sizing: border-box; /* Add this to include padding in width calculation */
+  /* Add this to include padding in width calculation */
+  box-sizing: border-box;
 }
 
 /* Remove margin from last input in each container */
@@ -188,5 +189,11 @@ button:disabled {
   height: 300px;
   margin: 10px 0;
   border-radius: 4px;
+}
+
+.link-option {
+  display: block;
+  margin: 10px 0;
+  color: #fff;
 }
 </style>
