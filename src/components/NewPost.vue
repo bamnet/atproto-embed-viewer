@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useBluesky } from '../libs/bluesky'
 import { AppBskyFeedPost, RichText } from '@atproto/api'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const { agent } = useBluesky()
 const postText = ref('')
 const isPosting = ref(false)
@@ -13,7 +15,7 @@ const locationName = ref('')
 const map = ref<google.maps.Map | null>(null)
 const marker = ref<google.maps.Marker | null>(null)
 const addLink = ref(true)
-const baseUrl = (window.location.origin + import.meta.env.BASE_URL).slice(0, -1);
+const baseUrl = (window.location.origin + import.meta.env.BASE_URL);
 
 const generatePostId = () => {
   return `geo-${Date.now()}`
@@ -63,7 +65,8 @@ const handleSubmit = async () => {
     const postId = generatePostId()
     let finalText = postText.value.trim()
     if (addLink.value) {
-      finalText += `\n\nView on map: ${baseUrl}/post/eid/${postId}`
+      const postUrl = router.resolve({ path: `/post/eid/${postId}` }).href
+      finalText += `\n\nView on map: ${baseUrl}${postUrl}`
     }
 
     // Create and parse rich text
