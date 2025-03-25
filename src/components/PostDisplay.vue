@@ -56,9 +56,12 @@ const getBskyAppUrl = (post: FeedViewPost): string => {
 <template>
     <div class="post">
         <h4>{{ post.post.author?.displayName || post.post.author?.handle }}</h4>
-        <p v-html="renderTextWithFacets(stripMapLink(post.post.record.text as string), post.post.record.facets as Facet[])"></p>
+        <p
+            v-html="renderTextWithFacets(stripMapLink(post.post.record.text as string), post.post.record.facets as Facet[])">
+        </p>
         <!-- @vue-expect-error -->
-        <div v-if="post.post.record.embed?.$type === 'community.lexicon.embed.geo'">
+        <div
+            v-if="post.post.record.embed?.$type === 'community.lexicon.location.geo' || post.post.record.embed?.$type === 'community.lexicon.embed.geo'">
             <!-- @vue-expect-error -->
             <iframe :src="getGoogleMapsEmbedUrl(post.post.record.embed.latitude, post.post.record.embed.longitude)"
                 width="400" height="200" style="border:0;" allowfullscreen="false" loading="lazy"
@@ -68,7 +71,7 @@ const getBskyAppUrl = (post: FeedViewPost): string => {
             <router-link :to="`/post/uri/${getPostId(post.post.uri)}`">
                 {{ formatTimestamp(post.post.indexedAt) }}
             </router-link>
-            · 
+            ·
             <a :href="getBskyAppUrl(post)" target="_blank">view on bsky.app</a>
         </div>
     </div>

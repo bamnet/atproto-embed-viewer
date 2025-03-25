@@ -78,7 +78,7 @@ const handleSubmit = async () => {
       facets: rt.facets,
       createdAt: new Date().toISOString(),
       embed: {
-        $type: 'community.lexicon.embed.geo',
+        $type: 'community.lexicon.location.geo',
         latitude: latitude.value,
         longitude: longitude.value,
         name: locationName.value.trim(),
