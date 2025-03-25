@@ -37,12 +37,16 @@ const formatTimestamp = (timestamp: string): string => {
 const getPostId = (uri: string): string => {
     return encodeURIComponent(uri);
 }
+
+const stripMapLink = (text: string): string => {
+    return text.replace(/\n\n(?:View map|View on map): https?:\/\/[^\s]+\/post\/eid\/geo-\d+/g, '');
+};
 </script>
 
 <template>
     <div class="post">
         <h4>{{ post.post.author?.displayName || post.post.author?.handle }}</h4>
-        <p v-html="renderTextWithFacets(post.post.record.text as string, post.post.record.facets as Facet[])"></p>
+        <p v-html="renderTextWithFacets(stripMapLink(post.post.record.text as string), post.post.record.facets as Facet[])"></p>
         <!-- @vue-expect-error -->
         <div v-if="post.post.record.embed?.$type === 'community.lexicon.embed.geo'">
             <!-- @vue-expect-error -->

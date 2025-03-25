@@ -66,7 +66,7 @@ const handleSubmit = async () => {
     let finalText = postText.value.trim()
     if (addLink.value) {
       const postUrl = router.resolve({ path: `/post/eid/${postId}` }).href
-      finalText += `\n\nView on map: ${baseUrl}${postUrl}`
+      finalText += `\n\nView map: ${baseUrl}${postUrl}`
     }
 
     // Create and parse rich text
