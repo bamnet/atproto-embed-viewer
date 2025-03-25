@@ -29,6 +29,14 @@ const renderTextWithFacets = (text: string, facets?: Array<Facet>) => {
     }
     return html
 };
+
+const formatTimestamp = (timestamp: string): string => {
+    return new Date(timestamp).toLocaleString();
+}
+
+const getPostId = (uri: string): string => {
+    return encodeURIComponent(uri);
+}
 </script>
 
 <template>
@@ -41,6 +49,11 @@ const renderTextWithFacets = (text: string, facets?: Array<Facet>) => {
             <iframe :src="getGoogleMapsEmbedUrl(post.post.record.embed.latitude, post.post.record.embed.longitude)"
                 width="400" height="200" style="border:0;" allowfullscreen="false" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="timestamp">
+            <router-link :to="`/post/${getPostId(post.post.uri)}`">
+                {{ formatTimestamp(post.post.indexedAt) }}
+            </router-link>
         </div>
     </div>
 </template>
@@ -59,5 +72,15 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.timestamp a {
+    color: #666;
 }
 </style>
