@@ -16,7 +16,7 @@ const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
     routes: [
         { path: '/', component: Home },
-        { path: '/post/uri/:uri', component: SinglePost, props: true },
+        { path: '/post/uri/:uri(.*)', component: SinglePost, props: true },
         { path: '/post/eid/:id', component: SinglePost, props: true }
     ]
 })
