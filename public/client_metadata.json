@@ -1,9 +1,9 @@
 {
-    "client_id": "https://atproto-demos.web.app/client_metadata.json",
+    "client_id": "https://extsky.web.app/client_metadata.json",
     "grant_types": ["authorization_code", "refresh_token"],
     "scope": "atproto transition:generic",
     "response_types": ["code"],
-    "redirect_uris": ["https://atproto-demos.web.app/"],
+    "redirect_uris": ["https://extsky.web.app/"],
     "token_endpoint_auth_method": "none",
     "dpop_bound_access_tokens": true
 }
