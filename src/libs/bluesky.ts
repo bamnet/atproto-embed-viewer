@@ -1,11 +1,12 @@
 import { BrowserOAuthClient, OAuthSession } from '@atproto/oauth-client-browser';
 import { computed, reactive, inject, type App, type InjectionKey, type Ref } from 'vue';
-import { Agent } from '@atproto/api';
+import { Agent, AtpAgent } from '@atproto/api';
 
 export const BLUESKY_AGENT = Symbol('bluesky-agent') as InjectionKey<Ref<Agent | null, Agent | null>>;
 export const BLUESKY_GENERATE_SIGNIN_URL = Symbol('bluesky-generate-signin-url') as InjectionKey<(handle: string) => Promise<URL | null>>;
 export const BLUESKY_SIGN_OUT = Symbol('bluesky-sign-out') as InjectionKey<() => Promise<void>>;
 export const BLUESKY_IS_SIGNED_IN = Symbol('bluesky-is-signed-in') as InjectionKey<Ref<boolean>>;
+export const BLUESKY_PUBLIC_AGENT = Symbol('bluesky-public-agent') as InjectionKey<Ref<AtpAgent>>;
 
 // Manually construct a Client ID for local development.
 const DEVELOPMENT_CLIENT_ID =
@@ -23,6 +24,7 @@ interface State {
     session: OAuthSession | null;
     isSignedIn: boolean;
     agent: Agent | null;
+    publicAgent: AtpAgent;
     oauthClient: BrowserOAuthClient | null;
     initialized: boolean;
 }
@@ -33,6 +35,7 @@ export const bskyPlugin = {
             session: null,
             isSignedIn: computed(() => !!state.session),
             agent: null,
+            publicAgent: computed(() => new AtpAgent({ service: 'https://public.api.bsky.app' })),
             oauthClient: null,
             initialized: false,
         });
@@ -98,17 +101,20 @@ export const bskyPlugin = {
         initOAuthClient();
 
         const agentRef = computed(() => state.agent);
+        const publicAgentRef = computed(() => state.publicAgent);
 
         app.provide(BLUESKY_AGENT, agentRef);
         app.provide(BLUESKY_GENERATE_SIGNIN_URL, generateSignInUrl);
         app.provide(BLUESKY_SIGN_OUT, signOut);
         app.provide(BLUESKY_IS_SIGNED_IN, computed(() => state.isSignedIn));
+        app.provide(BLUESKY_PUBLIC_AGENT, publicAgentRef);
     }
 };
 
 export const useBluesky = () => {
     return {
         agent: inject(BLUESKY_AGENT),
+        publicAgent: inject(BLUESKY_PUBLIC_AGENT),
         generateSigninUrl: inject(BLUESKY_GENERATE_SIGNIN_URL),
         signOut: inject(BLUESKY_SIGN_OUT),
         isSignedIn: inject(BLUESKY_IS_SIGNED_IN),

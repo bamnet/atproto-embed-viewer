@@ -9,23 +9,20 @@ const props = defineProps<{
     id?: string
 }>()
 
-const { agent, isSignedIn } = useBluesky()
+const { agent, publicAgent } = useBluesky()
 const post = ref<PostView>()
 const isLoading = ref(false)
 
 const fetchPostByCustomId = async () => {
-    if (!isSignedIn?.value || !agent?.value || !props.id) {
+    if (!props.id) {
         return
     }
 
     isLoading.value = true
     try {
-        // Search for posts containing our custom ID
-        const response = await agent.value.app.bsky.feed.searchPosts({
-            q: props.id,
-            limit: 1
-        })
-        if (response.data.posts.length > 0) {
+        const activeAgent = agent?.value || publicAgent?.value
+        const response = await activeAgent!.app.bsky.feed.searchPosts({ q: props.id, limit: 1 })
+        if (response.data.posts?.length > 0) {
             post.value = response.data.posts[0]
         }
     } catch (error) {
@@ -36,15 +33,11 @@ const fetchPostByCustomId = async () => {
 }
 
 const fetchPost = async () => {
-    if (!isSignedIn?.value || !agent?.value) {
-        return
-    }
-
     if (props.uri) {
-        // Original URI-based fetch
         isLoading.value = true
         try {
-            const response = await agent.value.getPostThread({ uri: decodeURIComponent(props.uri) })
+            const activeAgent = agent?.value || publicAgent?.value
+            const response = await activeAgent!.getPostThread({ uri: decodeURIComponent(props.uri) })
             if ('post' in response.data.thread) {
                 post.value = response.data.thread.post as PostView
             }
@@ -58,48 +51,33 @@ const fetchPost = async () => {
     }
 }
 
-// Watch for sign-in status.
-watch(isSignedIn!, (signedIn) => {
-    if (signedIn) {
-        fetchPost();
-    }
-})
-
-// Watch for prop changes
 watch(() => props.uri, (newUri) => {
-    if (isSignedIn?.value && newUri) {
+    if (newUri) {
         fetchPost()
     }
 })
 
 watch(() => props.id, (newId) => {
-    if (isSignedIn?.value && newId) {
+    if (newId) {
         fetchPost()
     }
 })
 
 onMounted(() => {
-    if (isSignedIn?.value) {
-        fetchPost()
-    }
+    fetchPost()
 })
 </script>
 
 <template>
     <div class="single-post">
-        <div v-if="isSignedIn">
-            <div v-if="post">
-                <PostDisplay :post="{ post }" />
-            </div>
-            <div v-else-if="isLoading">
-                Loading post...
-            </div>
-            <div v-else>
-                Post not found
-            </div>
+        <div v-if="post">
+            <PostDisplay :post="{ post }" />
+        </div>
+        <div v-else-if="isLoading">
+            Loading post...
         </div>
         <div v-else>
-            Please sign in to view this post
+            Post not found
         </div>
     </div>
 </template>
