@@ -70,7 +70,7 @@ const handleSubmit = async () => {
     }
 
     // Create and parse rich text
-    const rt = new RichText({ text: finalText })
+    const rt = new RichText({ text: finalText }, {cleanNewlines: true})
     await rt.detectFacets(agent.value) // This detects mentions, links, and tags
 
     const post = {

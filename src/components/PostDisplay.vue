@@ -16,15 +16,16 @@ const renderTextWithFacets = (text: string, facets?: Array<Facet>) => {
     const rt = new RichText({ text, facets });
     let html = ''
     for (const segment of rt.segments()) {
+        let segmentText = segment.text.replace(/\n/g, '<br>')
         if (segment.isLink()) {
-            html += `<a href="${segment.link?.uri}">${segment.text}</a>`
+            html += `<a href="${segment.link?.uri}">${segmentText}</a>`
         } else if (segment.isMention()) {
-            html += `<a href="https://bsky.app/profile/${segment.mention?.did}">${segment.text}</a>`
+            html += `<a href="https://bsky.app/profile/${segment.mention?.did}">${segmentText}</a>`
         } else if (segment.isTag()) {
-            const tagText = segment.text.replace(/^#/, ''); // Strip leading #
+            const tagText = segmentText.replace(/^#/, ''); // Strip leading #
             html += `<a href="https://bsky.app/hashtag/${encodeURIComponent(tagText)}">${segment.text}</a>`
         } else {
-            html += segment.text
+            html += segmentText
         }
     }
     return html
