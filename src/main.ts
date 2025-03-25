@@ -13,7 +13,7 @@ import SinglePost from './components/SinglePost.vue'
 });
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         { path: '/', component: Home },
         { path: '/post/:uri', component: SinglePost, props: true }
