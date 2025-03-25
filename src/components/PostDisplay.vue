@@ -20,6 +20,9 @@ const renderTextWithFacets = (text: string, facets?: Array<Facet>) => {
             html += `<a href="${segment.link?.uri}">${segment.text}</a>`
         } else if (segment.isMention()) {
             html += `<a href="https://bsky.app/profile/${segment.mention?.did}">${segment.text}</a>`
+        } else if (segment.isTag()) {
+            const tagText = segment.text.replace(/^#/, ''); // Strip leading #
+            html += `<a href="https://bsky.app/hashtag/${encodeURIComponent(tagText)}">${segment.text}</a>`
         } else {
             html += segment.text
         }
