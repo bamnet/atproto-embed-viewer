@@ -42,6 +42,14 @@ const getPostId = (uri: string): string => {
 const stripMapLink = (text: string): string => {
     return text.replace(/\n\n(?:View map|View on map): https?:\/\/[^\s]+\/post\/eid\/geo-\d+/g, '');
 };
+
+const getBskyAppUrl = (post: FeedViewPost): string => {
+    const uri = post.post.uri;
+    // URI format: at://did:plc:something/app.bsky.feed.post/rkey
+    const matches = uri.match(/at:\/\/[^/]+\/[^/]+\/(.+)$/);
+    const rkey = matches ? matches[1] : '';
+    return `https://bsky.app/profile/${post.post.author.handle}/post/${rkey}`;
+};
 </script>
 
 <template>
@@ -59,6 +67,8 @@ const stripMapLink = (text: string): string => {
             <router-link :to="`/post/uri/${getPostId(post.post.uri)}`">
                 {{ formatTimestamp(post.post.indexedAt) }}
             </router-link>
+            · 
+            <a :href="getBskyAppUrl(post)" target="_blank">view on bsky.app</a>
         </div>
     </div>
 </template>
