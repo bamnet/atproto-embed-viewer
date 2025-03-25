@@ -36,7 +36,8 @@ const formatTimestamp = (timestamp: string): string => {
 }
 
 const getPostId = (uri: string): string => {
-    return encodeURIComponent(uri);
+    // Convert from at://did:plc:xxx/app.bsky.feed.post/xxx to did:plc:xxx/app.bsky.feed.post/xxx
+    return encodeURIComponent(uri.replace('at://', ''));
 }
 
 const stripMapLink = (text: string): string => {

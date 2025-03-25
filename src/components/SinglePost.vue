@@ -37,7 +37,8 @@ const fetchPost = async () => {
         isLoading.value = true
         try {
             const activeAgent = agent?.value || publicAgent?.value
-            const response = await activeAgent!.getPostThread({ uri: decodeURIComponent(props.uri) })
+            const fullUri = `at://${props.uri}`
+            const response = await activeAgent!.getPostThread({ uri: decodeURIComponent(fullUri) })
             if ('post' in response.data.thread) {
                 post.value = response.data.thread.post as PostView
             }
