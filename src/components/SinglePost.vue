@@ -65,6 +65,19 @@ watch(isSignedIn!, (signedIn) => {
     }
 })
 
+// Watch for prop changes
+watch(() => props.uri, (newUri) => {
+    if (isSignedIn?.value && newUri) {
+        fetchPost()
+    }
+})
+
+watch(() => props.id, (newId) => {
+    if (isSignedIn?.value && newId) {
+        fetchPost()
+    }
+})
+
 onMounted(() => {
     if (isSignedIn?.value) {
         fetchPost()
