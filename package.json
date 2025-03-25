@@ -11,7 +11,8 @@
   "dependencies": {
     "@atproto/api": "^0.14.6",
     "@atproto/oauth-client-browser": "^0.3.10",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@types/google.maps": "^3.58.1",
