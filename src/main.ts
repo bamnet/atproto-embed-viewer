@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import './style.css'
 import App from './App.vue'
 import { bskyPlugin } from './libs/bluesky'
@@ -13,7 +13,7 @@ import SinglePost from './components/SinglePost.vue'
 });
 
 const router = createRouter({
-    history: createWebHashHistory(import.meta.env.BASE_URL),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         { path: '/', component: Home },
         { path: '/post/uri/:uri(.*)', component: SinglePost, props: true },

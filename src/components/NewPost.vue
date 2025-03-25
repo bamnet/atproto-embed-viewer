@@ -15,7 +15,7 @@ const locationName = ref('')
 const map = ref<google.maps.Map | null>(null)
 const marker = ref<google.maps.Marker | null>(null)
 const addLink = ref(true)
-const baseUrl = (window.location.origin + import.meta.env.BASE_URL);
+const baseUrl = (window.location.origin + import.meta.env.BASE_URL).slice(0, -1);
 
 const generatePostId = () => {
   return `geo-${Date.now()}`
