@@ -64,7 +64,7 @@ const getBskyAppUrl = (post: FeedViewPost): string => {
             v-if="post.post.record.embed?.$type === 'community.lexicon.location.geo' || post.post.record.embed?.$type === 'community.lexicon.embed.geo'">
             <!-- @vue-expect-error -->
             <iframe :src="getGoogleMapsEmbedUrl(post.post.record.embed.latitude, post.post.record.embed.longitude)"
-                width="400" height="200" style="border:0;" allowfullscreen="false" loading="lazy"
+                allowfullscreen="false" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
         <div class="timestamp">
@@ -102,5 +102,20 @@ a:hover {
 
 .timestamp a {
   color: var(--secondary-text-color); /* Using CSS variable */
+}
+
+iframe {
+  width: 100%;
+  max-width: 400px;
+  height: 200px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  iframe {
+    max-width: 100%;
+    height: 180px; /* Slightly smaller height on mobile */
+  }
 }
 </style>

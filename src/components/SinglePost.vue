@@ -73,6 +73,9 @@ onMounted(() => {
     <div class="single-post">
         <div v-if="post">
             <PostDisplay :post="{ post }" />
+            <div class="create-post-link">
+                <router-link to="/" class="cta-button">📍 Tag a location</router-link>
+            </div>
         </div>
         <div v-else-if="isLoading">
             Loading post...
@@ -95,5 +98,25 @@ onMounted(() => {
   .single-post {
     max-width: 100%; /* Adjust max-width for smaller screens */
   }
+}
+
+.create-post-link {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.cta-button:hover {
+    background-color: #2563eb;
+    text-decoration: none;
 }
 </style>

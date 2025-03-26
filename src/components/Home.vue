@@ -149,15 +149,19 @@ onMounted(() => {
 }
 
 .profile-section {
-  margin-bottom: 16px; /* Using spacing guideline */
-  padding: 12px; /* Using spacing guideline */
+  margin-bottom: 12px;
+  padding: 4px 8px;
   border-radius: 8px;
-  background-color: var(--secondary-color); /* Use secondary color for better contrast */
-  border: 1px solid var(--border-color); /* Adding border for better definition */
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .avatar {
-  margin: 8px 0; /* Using spacing guideline */
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .avatar img {
