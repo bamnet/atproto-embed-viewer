@@ -130,87 +130,101 @@ onMounted(() => {
 
 <style scoped>
 .bluesky-component {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px; /* Using spacing guideline */
+}
+
+@media (max-width: 768px) {
+  .bluesky-component {
+    max-width: 100%; /* Adjust max-width for smaller screens */
+    padding: 12px;
+  }
 }
 
 .loading {
-    text-align: center;
-    padding: 20px;
-    color: #666;
+  text-align: center;
+  padding: 16px; /* Using spacing guideline */
+  color: var(--secondary-text-color);
 }
 
 .profile-section {
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #666;
+  margin-bottom: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .avatar {
-    margin: 10px 0;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .avatar img {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 
 .feed-section {
-    margin-top: 20px;
+  margin-top: 16px; /* Using spacing guideline */
 }
 
 .login-section {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #666;
-    border-radius: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 16px; /* Using spacing guideline */
+  background-color: var(--surface-color); /* Using CSS variable */
+  border-radius: 8px;
+  border: 1px solid var(--border-color); /* Adding border for better definition */
 }
 
 .login-section input {
-    width: 100%;
-    padding: 8px;
-    margin: 8px 0 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0; /* Using spacing guideline, removed extra margin */
+  border: 1px solid var(--border-color); /* Using CSS variable */
+  border-radius: 4px;
+  box-sizing: border-box; /* Ensures padding is included in width */
 }
 
 .btn-signin,
 .btn-signout {
-    padding: 8px 16px;
-    margin: 8px;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 10px 20px; /* Increased padding */
+  margin: 8px 4px; /* Adjusted margin */
+  background-color: var(--primary-color); /* Using CSS variable */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .btn-signout {
-    background-color: #ef4444;
+  background-color: var(--error-color); /* Using CSS variable */
 }
 
 .cute-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-    font-size: 0.9em;
-    color: #666;
+  text-align: center;
+  padding: 16px; /* Using spacing guideline */
+  margin-top: 32px; /* Using spacing guideline */
+  font-size: 0.9em;
+  color: var(--secondary-text-color); /* Using CSS variable */
 }
 
 .cute-footer a {
-    color: #3b82f6;
-    text-decoration: none;
-    transition: color 0.2s ease;
+  color: var(--primary-color); /* Using CSS variable */
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .cute-footer a:hover {
-    color: #2563eb;
+  color: #2563eb; /* This color seems specific, keep for now */
 }
 
 .github-icon {
-    font-size: 1.2em;
-    vertical-align: middle;
+  font-size: 1.2em;
+  vertical-align: middle;
 }
 </style>

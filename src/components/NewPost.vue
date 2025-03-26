@@ -135,22 +135,24 @@ const emit = defineEmits<{
 
 <style scoped>
 .new-post {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #666;
+  margin: 16px 0;
+  padding: 12px;
+  background-color: var(--surface-color);
   border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
 textarea,
 input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
+  padding: 10px; /* Consistent padding */
+  margin-bottom: 10px; /* Consistent margin */
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   resize: vertical;
-  /* Add this to include padding in width calculation */
   box-sizing: border-box;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 /* Remove margin from last input in each container */
@@ -161,13 +163,20 @@ textarea:last-of-type {
 
 .actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Align button to the right */
   align-items: center;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .actions {
+    justify-content: center; /* Center button on smaller screens */
+  }
 }
 
 button {
-  padding: 8px 16px;
-  background-color: #3b82f6;
+  padding: 10px 20px; /* Increased padding */
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -180,23 +189,26 @@ button:disabled {
 }
 
 .error {
-  color: #ef4444;
+  color: var(--error-color);
+  margin-right: 16px;
 }
 
 .location-picker {
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 #map {
   width: 100%;
-  height: 300px;
-  margin: 10px 0;
+  height: 200px;
+  margin: 8px 0;
   border-radius: 4px;
+  border: 1px solid var(--border-color);
 }
 
-.link-option {
-  display: block;
-  margin: 10px 0;
-  color: #fff;
+@media (max-width: 768px) {
+  #map {
+    height: auto; /* Make map height responsive */
+    min-height: 150px; /* Set a minimum height */
+  }
 }
 </style>
