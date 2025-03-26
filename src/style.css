@@ -1,11 +1,21 @@
 :root {
+  /* Color variables for light mode */
+  --primary-color: #007AFF;
+  --secondary-color: #E5F0FF;
+  --text-color: #000000;
+  --secondary-text-color: #666666;
+  --background-color: #FFFFFF;
+  --surface-color: #F0F0F0;
+  --border-color: #CCCCCC;
+  --error-color: #FF3B30;
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--text-color);
+  background-color: var(--background-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,6 +23,69 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 12px; /* Reduce padding on smaller screens */
+  }
+
+  .bluesky-component {
+    padding: 12px; /* Reduce padding on smaller screens */
+  }
+
+  .login-section {
+    padding: 12px; /* Reduce padding on smaller screens */
+  }
+
+  .new-post {
+    padding: 12px; /* Reduce padding on smaller screens */
+  }
+
+  .single-post {
+    padding: 12px; /* Reduce padding on smaller screens */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Color variables for dark mode */
+    --primary-color: #4AB3F9;
+    --secondary-color: #1C2E4A;
+    --text-color: #FFFFFF;
+    --secondary-text-color: #999999;
+    --background-color: #121212;
+    --surface-color: #1E1E1E;
+    --border-color: #333333;
+    --error-color: #FF453A;
+  }
+}
+
+h1 {
+  font-size: 24px; /* Using the defined font size */
+  line-height: 1.1;
+}
+
+/* Add global styles for other headings and body text here */
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+body {
+  font-size: 16px;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Example usage of spacing variables (to be expanded) */
+.container {
+  padding: 16px; /* Example: using a multiple of 8px */
+}
 a {
   font-weight: 500;
   color: #646cff;

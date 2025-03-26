@@ -79,27 +79,28 @@ const getBskyAppUrl = (post: FeedViewPost): string => {
 
 <style scoped>
 .post {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
+  padding: 12px; /* Using spacing guideline */
+  margin-bottom: 12px; /* Using spacing guideline */
+  border-bottom: 1px solid var(--border-color); /* Using CSS variable */
+  border-radius: 8px; /* Added border-radius */
 }
 
 a {
-    color: #1DA1F2;
-    text-decoration: none;
+  color: var(--primary-color); /* Using CSS variable */
+  text-decoration: none;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .timestamp {
-    font-size: 0.8em;
-    color: #666;
-    margin-top: 5px;
+  font-size: 0.9em; /* Adjusted font size */
+  color: var(--secondary-text-color); /* Using CSS variable */
+  margin-top: 6px; /* Adjusted margin */
 }
 
 .timestamp a {
-    color: #666;
+  color: var(--secondary-text-color); /* Using CSS variable */
 }
 </style>

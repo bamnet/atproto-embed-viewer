@@ -85,8 +85,15 @@ onMounted(() => {
 
 <style scoped>
 .single-post {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px; /* Using spacing guideline */
+  border-radius: 8px; /* Added border-radius */
+}
+
+@media (max-width: 768px) {
+  .single-post {
+    max-width: 100%; /* Adjust max-width for smaller screens */
+  }
 }
 </style>
